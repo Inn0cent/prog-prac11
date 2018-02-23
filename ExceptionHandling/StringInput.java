@@ -10,9 +10,23 @@ public class StringInput
     } 
  
  
-    public String enterData() throws IOException 
+    public String enterData() //throws IOException 
     {          
-        String input = reader.readLine();
+        String input = null;
+        boolean error = true;
+        while(error){
+            error = false;
+            try{
+                input = reader.readLine();
+            } catch (IOException e) {
+                error = true;
+                System.out.println("There was a problem with your input, please enter again.");
+            }
+            if(input == null || input.equals("")){
+                System.out.print("Please enter a value: ");
+                error = true;
+            }
+        }
         return input;                        
     } 
 } 

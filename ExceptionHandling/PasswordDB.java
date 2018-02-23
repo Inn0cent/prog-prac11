@@ -17,42 +17,82 @@ public class PasswordDB
         input = new StringInput();
     }
     
-    public void newUser(String nm, String un, String em, String pwd){
-        boolean error = false;
-        if(!error){
-            error = checkUsername(un);
+    public void newUser(){
+        String name;
+        String username;
+        String email;
+        String password;
+        boolean error = true;
+        System.out.print("Enter name: ");
+        name = input.enterData();
+        System.out.print("Enter username: ");
+        username = input.enterData();
+        System.out.print("Enter email: ");
+        email = input.enterData();
+        System.out.print("Enter password: ");
+        password = input.enterData();
+        while(!checkUsername(username)){
+            System.out.print("Enter username: ");
+            username = input.enterData();
         }
-        if(!error){
-            error = checkPassword(pwd);
+        while(error){
+            error = false;
+            try{
+                checkPassword(password);            
+            } catch (PasswordException ex){
+                System.out.println(ex.getMessage());
+                error = true;
+                System.out.print("Enter password: ");
+                password = input.enterData();
+            }
         }
-        if(!error){
-            error = checkEmail(em);
+        while(!checkEmail(email)){
+            System.out.print("Enter email: ");
+            email = input.enterData();
+        }        
+        users.add(new User(name, username, email, password));        
+        System.out.println("Success");
+    }
+    
+    public void findUser(){
+        String username;
+        boolean found = false;
+        System.out.print("Enter username: ");
+        username = input.enterData();
+        for(User u : users){
+            if(username.equals(u.getUsername())){
+                found = true;
+            }
         }
-        if(!error){
-            users.add(new User(nm, un, em, pwd));
+        if(found){
+            System.out.println("The user has been found");
+        }else{
+            System.out.println("The user was not found");
         }
     }
     
     public boolean checkUsername(String un){
         for(User u : users){
             if(un.equals(u.getUsername())){
-                return true;
+                System.out.println("Username is not unique");
+                return false;
             }
         }
-        return false;
+        return true;
     }
     
-    public boolean checkPassword(String pwd){
+    public boolean checkPassword(String pwd) throws PasswordException{
         if(pwd.length() < 8){
-            return true;
+            throw new PasswordException("Password must be longer than 8 characters");
         }
-        return false;
+        return true;
     }
     
     public boolean checkEmail(String em){
         if(em.indexOf("@") <= 0){
-            return true;
+            System.out.println("Invalid email");
+            return false;
         }
-        return false;
+        return true;
     }
 }

@@ -25,16 +25,21 @@ public class PasswordDB
         boolean error = true;
         System.out.print("Enter name: ");
         name = input.enterData();
+        
         System.out.print("Enter username: ");
         username = input.enterData();
-        System.out.print("Enter email: ");
-        email = input.enterData();
-        System.out.print("Enter password: ");
-        password = input.enterData();
         while(!checkUsername(username)){
             System.out.print("Enter username: ");
             username = input.enterData();
         }
+        System.out.print("Enter email: ");
+        email = input.enterData();
+        while(!checkEmail(email)){
+            System.out.print("Enter email: ");
+            email = input.enterData();
+        } 
+        System.out.print("Enter password: ");
+        password = input.enterData();
         while(error){
             error = false;
             try{
@@ -42,16 +47,12 @@ public class PasswordDB
             } catch (PasswordException ex){
                 System.out.println(ex.getMessage());
                 error = true;
-                System.out.print("Enter password: ");
-                password = input.enterData();
+                password = ex.enterData();
             }
         }
-        while(!checkEmail(email)){
-            System.out.print("Enter email: ");
-            email = input.enterData();
-        }        
         users.add(new User(name, username, email, password));        
         System.out.println("Success");
+        System.out.println();
     }
     
     public void findUser(){
@@ -71,7 +72,7 @@ public class PasswordDB
         }
     }
     
-    public boolean checkUsername(String un){
+    private boolean checkUsername(String un){
         for(User u : users){
             if(un.equals(u.getUsername())){
                 System.out.println("Username is not unique");
@@ -81,14 +82,14 @@ public class PasswordDB
         return true;
     }
     
-    public boolean checkPassword(String pwd) throws PasswordException{
+    private boolean checkPassword(String pwd) throws PasswordException{
         if(pwd.length() < 8){
             throw new PasswordException("Password must be longer than 8 characters");
         }
         return true;
     }
     
-    public boolean checkEmail(String em){
+    private boolean checkEmail(String em){
         if(em.indexOf("@") <= 0){
             System.out.println("Invalid email");
             return false;
